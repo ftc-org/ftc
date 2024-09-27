@@ -6,11 +6,53 @@
     <title>{% block title %}Live Updates{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
 </head>
-<body>
-    <div class="container">
-        {% block content %}
-        {% endblock %}
+<body class="bg-gray-100 font-sans max-w-[1000px] mx-auto">
+    <header class="bg-aljazeera-red text-white py-4">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl font-bold mb-4">#FreeTheCitizens</h1>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="#" class="hover:underline">Home</a></li>
+                    <li><a href="#" class="hover:underline">About</a></li>
+                    <li><a href="#" class="hover:underline">Events</a></li>
+                    {% comment %} <li><a href="#" class="hover:underline">Features</a></li>
+                    <li><a href="#" class="hover:underline">Opinion</a></li>
+                    <li><a href="#" class="hover:underline">Video</a></li> {% endcomment %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 mt-8">
+        <div class="flex flex-col md:flex-row gap-8">
+            <main class="flex-grow">
+                <h2 class="text-2xl font-bold mb-4">Latest News</h2>
+                {% block content %}
+                <article class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-2">Sample News Article</h3>
+                    <p>This is where the main content of your news articles would go. You can replace this with dynamic content from your Django views.</p>
+                </article>
+                {% endblock %}
+            </main>
+            <aside class="md:w-1/3">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4">Top Stories</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-blue-600 hover:underline">Story 1</a></li>
+                        <li><a href="#" class="text-blue-600 hover:underline">Story 2</a></li>
+                        <li><a href="#" class="text-blue-600 hover:underline">Story 3</a></li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
     </div>
+
+    <footer class="bg-gray-800 text-white mt-8 py-4">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2024 #FTC. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>
