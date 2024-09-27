@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ event.title }} | Live Updates{% endblock %}
+
+{% block content %}
+<div class="event-detail">
+    <h1>{{ event.title }}</h1>
+    <p class="timestamp">{{ event.time_since }}</p>
+    <p class="author">By {{ event.author.username }}</p>
+    <div class="event-content">
+        {{ event.content|linebreaks }}
+    </div>
+    <a href="{% url 'event_list' %}" class="back-link">&larr; Back to Live Updates</a>
+</div>
+{% endblock %}

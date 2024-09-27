@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="live-updates">
+    <h1><span class="live-dot"></span> LIVE UPDATES</h1>
+    <h2><a href="{% url 'event_detail' event.id %}">{{ event.title }}</a></h2>
+    {% for update in updates %}
+        <div class="event">
+            <p class="timestamp">{{ update.time_since }}</p>
+            <p>{{ update.summary }}</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
