@@ -3,9 +3,8 @@ from update.models import Event
 
 
 def event_list(request):
-    event = Event.objects.latest("-updated_at")
-    updates = event.updates.all()
-    return render(request, "update/event_list.html", {"event": event, "updates": updates})
+    events = Event.objects.filter(is_active=True).order_by("-updated_at")
+    return render(request, "update/event_list.html", {"events": events})
 
 
 def event_detail(request, event_id):
