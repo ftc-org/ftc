@@ -3,17 +3,18 @@
 {% block content %}
 <div class="container max-w-4xl mx-auto px-4 mt-8">
     <div class="flex flex-col md:flex-row gap-8">
+      {% if latest_event %}
         <main class="flex-grow">
             <div class="flex flex-row gap-2 items-center mb-4">
                 <svg class="icon w-5 h-5" viewBox="0 0 16 16" version="1.1" aria-hidden="true"><title>blinking-dot</title><g><circle cx="8" cy="8" r="7.16" stroke="#c31833" stroke-width="1.68" fill="#ffffff"></circle><circle cx="8" cy="8" r="4" fill="#c31833"><animate attributeName="opacity" values="1;1;1;1;0;1" dur="2.5s" repeatCount="indefinite"></animate></circle></g></svg>
                 <h2 class="text-2xl font-bold">Live Updates</h2>
             </div> 
             <article class="bg-white p-6 rounded-lg shadow-md">
-                <a href="{% url 'event_detail' event.id %}">
-                    <h3 class="text-2xl font-semibold mb-2 hover:underline">{{ event.title }}</h3>
+                <a href="{% url 'event_detail' latest_event.id %}">
+                    <h3 class="text-2xl font-semibold mb-2 hover:underline">{{ latest_event.title }}</h3>
                 </a>
                 <div class="flex flex-col">
-                    {% for update in event.updates.all %}
+                    {% for update in latest_event.updates.all %}
                         <div class="flex flex-row gap-8">
                             <div class="flex flex-row gap-2 shrink-0 min-w-[100px]">
                                 <div class="relative flex flex-col items-center h-full">
@@ -22,9 +23,9 @@
                                     </div>
                                     <div class="w-0.5 h-full bg-gray-400"></div>
                                 </div>
-                                <p class="text-gray-500">{{ update.time_since }};</p>
+                                <p class="text-gray-500">{{ update.time_since }}:</p>
                             </div>
-                            <a href="{% url 'event_detail' event.id %}#{{ update.id }}">
+                            <a href="{% url 'event_detail' latest_event.id %}#{{ update.id }}">
                                 <p class='mb-1 hover:underline'>{{ update.summary }}</p>
                             </a>
                         </div>
@@ -32,14 +33,15 @@
                 </div>
             </article>
         </main>
+      {% endif %}
 
         <aside class="md:w-1/3">
             <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-semibold mb-4">Recent Events</h3>
+                <h3 class="text-xl font-semibold mb-4">Live Updates</h3>
                 <ul class="space-y-2">
-                    <li><a href="#" class="text-blue-600 hover:underline">Story 1</a></li>
-                    <li><a href="#" class="text-blue-600 hover:underline">Story 2</a></li>
-                    <li><a href="#" class="text-blue-600 hover:underline">Story 3</a></li>
+                  {% for event in live_events %}
+                    <li><a href="{% url 'event_detail' event.id %}" class="text-blue-600 hover:underline">{{ event.title }}</a></li>
+                  {% endfor %}
                 </ul>
             </div>
         </aside>
@@ -47,36 +49,20 @@
     <section class="mt-12 max-w-4xl mx-auto">
         <h2 class="text-2xl font-semibold text-gray-800 mb-6">Recent Events</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <img src="https://via.placeholder.com/600x400" alt="Related article 1" class="w-full h-30 object-cover">
-                <div class="p-4">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">
-                        <a href="#" class="hover:text-blue-600 transition duration-300">Quis esse deserunt proident consequat.</a>
-                    </h3>
-                    <p class="text-sm text-gray-600 mb-2">September 25, 2024</p>
-                    <p class="text-gray-700">Exercitation eiusmod cillum eu laboris eu cillum quis proident excepteur.</p>
-                </div>
-            </div>
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <img src="https://via.placeholder.com/600x400" alt="Related article 2" class="w-full h-30 object-cover">
-                <div class="p-4">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">
-                        <a href="#" class="hover:text-blue-600 transition duration-300">Quis esse deserunt proident consequat.</a>
-                    </h3>
-                    <p class="text-sm text-gray-600 mb-2">September 22, 2024</p>
-                    <p class="text-gray-700">Exercitation eiusmod cillum eu laboris eu cillum quis proident excepteur.</p>
-                </div>
-            </div>
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <img src="https://via.placeholder.com/600x400" alt="Related article 2" class="w-full h-30 object-cover">
-                <div class="p-4">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">
-                        <a href="#" class="hover:text-blue-600 transition duration-300">Quis esse deserunt proident consequat.</a>
-                    </h3>
-                    <p class="text-sm text-gray-600 mb-2">September 22, 2024</p>
-                    <p class="text-gray-700">Exercitation eiusmod cillum eu laboris eu cillum quis proident excepteur.</p>
-                </div>
-            </div>
+            {% for event in events %}
+              <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                {% if event.image %}
+                <img src="{{ event.image.image.url }}" alt="Related article 1" class="w-full h-30 object-cover">
+                {% endif %}
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                          <a href="{% url 'event_detail' event.id %}" class="hover:text-blue-600 transition duration-300">{{event.title}}</a>
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-2">{{ event.created_at }}</p>
+                        <p class="text-gray-700">{{ event.description }}</p>
+                    </div>
+              </div>
+            {% endfor %}
         </div>
     </section>
 </div>

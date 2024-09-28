@@ -5,6 +5,7 @@ from django.utils import timezone
 class Event(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
+    description = models.TextField(default="", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -13,11 +14,19 @@ class Event(models.Model):
     def __str__(self):
         return self.title
 
+class EventImage(models.Model):
+    event = models.OneToOneField(Event, on_delete=models.CASCADE, related_name="image", null=True)
+    image = models.ImageField(null=True, blank=True)
+    caption = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.caption
 
 class Update(models.Model):
     event = models.ForeignKey(Event, related_name='updates', on_delete=models.CASCADE)
     summary = models.CharField(max_length=200, default="")
     content = models.TextField()
+    content = models.TextField(default="", blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -41,9 +50,9 @@ class Update(models.Model):
         else:
             return "Just now"
 
-class UpdateImages(models.Model):
+class UpdateImage(models.Model):
     update = models.ForeignKey(Update, related_name="images", on_delete=models.CASCADE, null=True)
     caption = models.CharField(max_length=200, blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(null=True)
+    image = models.ImageField(null=True, blank=True)
 
