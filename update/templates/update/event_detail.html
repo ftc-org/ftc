@@ -3,6 +3,87 @@
 {% block title %}{{ event.title }} | Live Updates{% endblock %}
 
 {% block content %}
+<main class="container mx-auto px-4 py-8">
+    <article class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+        <header class="p-6 bg-gray-50">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">{{ event.title }}</h1>
+            <div class="flex items-center text-sm text-gray-600">
+                <span>By {{ event.author }}</span>
+                <span class="mx-2">|</span>
+                <time datetime="2024-09-28">{{ event.created_at }}</time>
+            </div>
+        </header>
+
+        <figure class="mb-6">
+            <img src="https://via.placeholder.com/1200x400" alt="Climate change impact on agriculture" class="w-full h-auto">
+            <figcaption class="text-sm text-gray-600 mt-2 px-6">A farmer inspects his drought-affected crops in a field</figcaption>
+        </figure>
+
+        <div class="flex flex-col px-6 pb-6">
+            {% for update in updates %}
+                <div id="{{ update.id }}" class="flex flex-col">
+                    <div class="flex flex-row gap-2 shrink-0 min-w-[100px]">
+                        <div class="flex flex-col items-center h-full">
+                            <div class="rounded-full w-4 h-4 p-0.5 shrink-0 border mt-1 border-orange-400">
+                                <div class="rounded-full w-full h-full bg-orange-400"></div>
+                            </div>
+                            <div class="w-0.5 h-3.5 bg-gray-400"></div>
+                        </div>
+                        <p class="font-medium mb-3">{{ update.time_since }}</p>
+                    </div>
+                    <div class="flex flex-col gap-1.5 border rounded-md p-4">
+                        <p class='font-semibold text-xl'>{{ update.summary }}</p>
+                        <p class="text-gray-700">{{ update.content }}</p>
+                    </div>
+                    <div class="flex flex-col items-center justify-center w-4">
+                        {% if not forloop.last %}
+                            <div class="w-0.5 h-10 bg-gray-400"></div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <footer class="mt-8 pt-8 border-t border-gray-200 px-6 pb-6">
+            <a href="{% url 'event_list' %}" class="back-link">&larr; Back to Live Updates</a>
+            {% comment %} <h2 class="text-xl font-semibold text-gray-800 mb-4">Tags</h2>
+            <div class="flex flex-wrap gap-2">
+                <a href="#" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition duration-300">Climate Change</a>
+                <a href="#" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition duration-300">Agriculture</a>
+                <a href="#" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition duration-300">Food Security</a>
+                <a href="#" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition duration-300">Global Warming</a>
+            </div> {% endcomment %}
+        </footer>
+    </article>
+
+    <section class="mt-12 max-w-4xl mx-auto">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Recent Events</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <img src="https://via.placeholder.com/600x400" alt="Related article 1" class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                        <a href="#" class="hover:text-blue-600 transition duration-300">Quis esse deserunt proident consequat.</a>
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-2">September 25, 2024</p>
+                    <p class="text-gray-700">Exercitation eiusmod cillum eu laboris eu cillum quis proident excepteur occaecat pariatur cupidatat labore quis.</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <img src="https://via.placeholder.com/600x400" alt="Related article 2" class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                        <a href="#" class="hover:text-blue-600 transition duration-300">Quis esse deserunt proident consequat.</a>
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-2">September 22, 2024</p>
+                    <p class="text-gray-700">Exercitation eiusmod cillum eu laboris eu cillum quis proident excepteur occaecat pariatur cupidatat labore quis.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% comment %} 
 <div class="event-detail">
     <h1>{{ event.title }}</h1>
     <p class="timestamp">{{ event.time_since }}</p>
@@ -11,5 +92,5 @@
         {{ event.content|linebreaks }}
     </div>
     <a href="{% url 'event_list' %}" class="back-link">&larr; Back to Live Updates</a>
-</div>
+</div> {% endcomment %}
 {% endblock %}
