@@ -8,7 +8,7 @@ class Event(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    is_active = models.BooleanField(default=True)
+    is_live = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
@@ -30,7 +30,7 @@ class Update(models.Model):
 
     def time_since(self):
         now = timezone.now()
-        diff = now - self.updated_at
+        diff = now - self.created_at
 
         if diff.days > 0:
             return f"{diff.days}d ago"

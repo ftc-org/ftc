@@ -10,6 +10,8 @@ The free Citizens app is to keep historical data during the #StopGalamseyNow pro
 `source venv/bin/activate`
 3. Run `pip3 install -r requirements.txt`
 4. Run `python manage.py migrate`
+5. Generate a django secret key
+6. Create a `.env` file in the root of the project and add env variable `DJANGO_SECRET_KEY` with your generated secret key as the value
 5. From the root directory run `python manage.py runserver` to run the server
 
 ### Navigate to admin
