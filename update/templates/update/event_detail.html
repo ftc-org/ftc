@@ -16,7 +16,7 @@
 
         <figure class="mb-6">
           {% if event.image %}
-            <img src={{ event.image.image.url }} alt="{{event.image.caption}}" class="w-full h-auto">
+            <img src="{{ event.image.image.url }}" alt="{{event.image.caption}}" class="w-full h-auto">
           {% endif %}
           <figcaption class="text-sm text-gray-600 mt-2 px-6">{{event.image.caption}}</figcaption>
         </figure>
@@ -39,7 +39,7 @@
                     </div>
                       {% for image in update.images.all %}
                         <figure class="mb-6">
-                          {% if event.image %}
+                          {% if image %}
                             <img src={{ image.image.url }} alt="{{image.caption}}" class="w-full h-auto">
                           {% endif %}
                           <figcaption class="text-sm text-gray-600 mt-2 px-6">{{image.caption}}</figcaption>
