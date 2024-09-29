@@ -12,6 +12,7 @@ def event_list(request):
                 .values("created_at")[:1]
             )
         )
+        .select_related("image")
         .order_by("-latest_update")
         .prefetch_related("updates")
     )
