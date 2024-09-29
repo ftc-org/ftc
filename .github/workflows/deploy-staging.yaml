@@ -1,0 +1,32 @@
+name: Deploy to staging
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.merged == true }}
+    steps:
+      - name: Start deployment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USERNAME }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          port: ${{ secrets.STAGING_PORT }}
+          script: |
+            if [ ! -d "${{secrets.STAGING_SOURCE_CODE_PATH}}" ]; then git clone git@github.com:ftc-org/ftc.git ${{secrets.STAGING_SOURCE_CODE_PATH}}; fi && \
+            cd ${{secrets.STAGING_SOURCE_CODE_PATH}} && \
+            git checkout master && \
+            git pull && \
+            if [ ! -d "venv" ]; then python3.10 -m venv venv; fi && \
+            source ./venv/bin/activate && \
+            python manage.py migrate && \
+            deactivate
