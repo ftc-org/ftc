@@ -14,6 +14,9 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
+def str_to_bool(value):
+    return value.lower() in ('true', 'yes', 'on', '1')
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,11 +29,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = str_to_bool(os.environ.get("DJANGO_DEBUG", 'False'))
 
-CORS_ALLOW_ALL_ORIGINS = True
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(',')
 
+CORS_ALLOW_ALL_ORIGINS = str_to_bool(os.environ.get('CORS_ALLOW_ALL_ORIGINS', 'False'))
+CORS_ORIGINS_WHITELIST = os.environ.get("CORS_ORIGINS_WHITELIST").split(',')
+
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS").split(',')
+CSRF_ALLOWED_ORIGINS = os.environ.get("CSRF_ALLOWED_ORIGINS").split(',')
+CSRF_COOKIE_SECURE = str_to_bool(os.environ.get('CSRF_COOKIE_SECURE', 'False'))  # Set to False if you're not using HTTPS
+CSRF_COOKIE_HTTPONLY = str_to_bool(os.environ.get('CSRF_COOKIE_HTTPONLY', 'False'))
 
 # Application definition
 
@@ -134,7 +143,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATIC_DIRS = [
     BASE_DIR / "static",
 ]
