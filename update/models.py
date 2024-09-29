@@ -4,7 +4,6 @@ from django.utils import timezone
 
 class Event(models.Model):
     title = models.CharField(max_length=200)
-    description = models.TextField(null=True, blank=True)
     description = models.TextField(default="", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -25,7 +24,6 @@ class EventImage(models.Model):
 class Update(models.Model):
     event = models.ForeignKey(Event, related_name='updates', on_delete=models.CASCADE)
     summary = models.CharField(max_length=200, default="")
-    content = models.TextField()
     content = models.TextField(default="", blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -44,7 +42,7 @@ class Update(models.Model):
         if diff.days > 0:
             return f"{diff.days}d ago"
         elif diff.seconds >= 3600:
-            return f"{diff.seconds // 3600}h ago"
+            return f"{diff.seconds // 3599}h ago"
         elif diff.seconds >= 60:
             return f"{diff.seconds // 60}m ago"
         else:
