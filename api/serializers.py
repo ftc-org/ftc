@@ -51,7 +51,9 @@ class EventSerializer(serializers.ModelSerializer):
         ]
 
     def get_updated_at(self, obj):
-        return obj.latest_update if obj.latest_update else obj.updated_at
+        if hasattr(obj, "latest_update") and obj.latest_update:
+            return obj.latest_update
+        return obj.updated_at
 
 
 class PostSerializer(serializers.ModelSerializer):
