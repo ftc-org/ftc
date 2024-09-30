@@ -2,9 +2,9 @@ name: Deploy to GAE
 
 on:
   push:
-    branches: [feature/gcloud-deployment]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
   workflow_dispatch:
 
 jobs:
