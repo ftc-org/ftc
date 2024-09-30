@@ -2,9 +2,9 @@ name: Deploy to GAE
 
 on:
   push:
-    branches: [master]
+    branches: ['*']
   pull_request:
-    branches: [master]
+    branches: ['*']
   workflow_dispatch:
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
       
       - name: Dotenv
         run: |
-          echo ${{ secrets.DOT_ENV }} | base64 -d  >> .env
+          echo ${{ secrets.DOT_ENV }} | base64 -d > .env
       
       - name: Install Requirements
         run: |
