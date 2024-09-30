@@ -1,35 +1,45 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 
 from update.models import Event, EventImage, Post, Update, UpdateImage
 
 
-class UpdateImageSerializer(ModelSerializer):
+class UpdateImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = UpdateImage
         fields = ["image", "caption"]
 
 
-class UpdateSerializer(ModelSerializer):
+class UpdateSerializer(serializers.ModelSerializer):
     images = UpdateImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Update
-        fields = ["summary", "images", "content", "author", "created_at", "updated_at"]
+        fields = [
+            "id",
+            "summary",
+            "images",
+            "content",
+            "author",
+            "created_at",
+            "updated_at",
+        ]
 
 
-class EventImageSerializer(ModelSerializer):
+class EventImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventImage
         fields = ["image", "caption"]
 
 
-class EventSerializer(ModelSerializer):
+class EventSerializer(serializers.ModelSerializer):
     updates = UpdateSerializer(many=True, read_only=True)
+    updated_at = serializers.SerializerMethodField()
     image = EventImageSerializer(read_only=True)
 
     class Meta:
         model = Event
         fields = [
+            "id",
             "title",
             "description",
             "created_at",
@@ -40,7 +50,19 @@ class EventSerializer(ModelSerializer):
             "image",
         ]
 
-class PostSerializer(ModelSerializer):
+    def get_updated_at(self, obj):
+        return obj.latest_update if obj.latest_update else obj.updated_at
+
+
+class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ["title", "content", "author", "created_at", "updated_at", "image"] 
+        fields = [
+            "id",
+            "title",
+            "content",
+            "author",
+            "created_at",
+            "updated_at",
+            "image",
+        ]

@@ -2,21 +2,28 @@ from rest_framework.mixins import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.decorators import action
 from api.serializers import EventSerializer, PostSerializer
-from django.db.models import OuterRef, Prefetch, Subquery
+from django.db.models import Prefetch, Max, When, Case, BooleanField, Value
 from update.models import Event, Update, Post
 from django_filters.rest_framework import DjangoFilterBackend
 
 
 class EventViewSet(ReadOnlyModelViewSet):
+
+    # order queryset by the events with the latest updates
+    # if event has no updates then it should have less priority
     queryset = (
         Event.objects.annotate(
-            latest_update=Subquery(
-                Update.objects.filter(event=OuterRef("pk"))
-                .order_by("-created_at")
-                .values("created_at")[:1]
-            )
+            latest_update=Max("updates__created_at"),
+            has_update=Case(
+                When(updates__isnull=False, then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField(),
+            ),
         )
-        .order_by("-latest_update")
+        .order_by(
+            "-has_update",
+            "-latest_update",
+        )
         .prefetch_related(
             Prefetch("updates", queryset=Update.objects.prefetch_related("images"))
         )
