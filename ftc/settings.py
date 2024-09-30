@@ -17,6 +17,9 @@ import environ
 from google.cloud import secretmanager
 from google.oauth2 import service_account
 
+def str_to_bool(value):
+    return value.lower() in ('true', 'yes', 'on', '1')
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,7 +34,6 @@ if os.path.isfile(env_file):
 elif os.environ.get('GOOGLE_CLOUD_PROJECT', None):
     # pull .env file from Secret Manager
     project_id = os.environ.get('GOOGLE_CLOUD_PROJECT')
-
     client = secretmanager.SecretManagerServiceClient()
     settings_name = os.environ.get('SETTINGS_NAME', 'django_settings')
     name = f'projects/{project_id}/secrets/{settings_name}/versions/latest'
@@ -48,9 +50,16 @@ else:
 SECRET_KEY = env("SECRET_KEY")
 DEBUG = env("DEBUG")
 
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(',')
 
-ALLOWED_HOSTS = ['*']
 
+CORS_ALLOW_ALL_ORIGINS = str_to_bool(os.environ.get('CORS_ALLOW_ALL_ORIGINS', 'False'))
+CORS_ORIGINS_WHITELIST = os.environ.get("CORS_ORIGINS_WHITELIST").split(',')
+
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS").split(',')
+CSRF_ALLOWED_ORIGINS = os.environ.get("CSRF_ALLOWED_ORIGINS").split(',')
+CSRF_COOKIE_SECURE = str_to_bool(os.environ.get('CSRF_COOKIE_SECURE', 'False'))  # Set to False if you're not using HTTPS
+CSRF_COOKIE_HTTPONLY = str_to_bool(os.environ.get('CSRF_COOKIE_HTTPONLY', 'False'))
 
 # Application definition
 
@@ -65,6 +74,7 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "rest_framework",
     "django_filters",
+    "corsheaders",
 ]
 
 REST_FRAMEWORK = {
@@ -76,6 +86,7 @@ REST_FRAMEWORK = {
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -102,19 +113,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "ftc.wsgi.application"
-
-# postgres
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql_psycopg2",
-#         "NAME": os.environ.get("DB_NAME"),
-#         "USER": os.environ.get("DB_USER"),
-#         "PASSWORD": os.environ.get("DB_PASSWORD"),
-#         "HOST": os.environ.get("DB_HOST"),
-#         "PORT": os.environ.get("DB_PORT"),
-#     }
-# }
 
 DATABASES = {"default": env.db()}
 
@@ -153,12 +151,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-# STATIC_ROOT = BASE_DIR / "staticfiles"
-# STATIC_URL = "static/"
-# STATIC_DIRS = [
-#     BASE_DIR / "static",
-# ]
-
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -173,6 +165,7 @@ GS_BUCKET_NAME = env('GS_BUCKET_NAME')
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 
 # Media
 MEDIA_URL = "/media/"

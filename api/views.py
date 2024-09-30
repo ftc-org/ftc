@@ -1,12 +1,10 @@
 from rest_framework.mixins import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.decorators import action
-from api.serializers import EventSerializer
+from api.serializers import EventSerializer, PostSerializer
 from django.db.models import OuterRef, Prefetch, Subquery
-from update.models import Event, Update
+from update.models import Event, Update, Post
 from django_filters.rest_framework import DjangoFilterBackend
-
-# Create your views here.
 
 
 class EventViewSet(ReadOnlyModelViewSet):
@@ -20,7 +18,7 @@ class EventViewSet(ReadOnlyModelViewSet):
         )
         .order_by("-latest_update")
         .prefetch_related(
-            Prefetch("updates", queryset=Update.objects.order_by("-created_at"))
+            Prefetch("updates", queryset=Update.objects.prefetch_related("images"))
         )
     )
     serializer_class = EventSerializer
@@ -40,4 +38,8 @@ class EventViewSet(ReadOnlyModelViewSet):
         return Response(serializer.data)
 
 
-
+class PostViewSet(ReadOnlyModelViewSet):
+    queryset = Post.objects.filter(is_published=True).order_by("-created_at")
+    serializer_class = PostSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["title", "author"]

@@ -4,7 +4,7 @@ The free Citizens app is to keep historical data during the #StopGalamseyNow pro
 
 ## How to run this?
 ### Running server
-1. Create a `.env` file in the root directory
+1. Create a copy of `.env.example`. Name it `.env` and fill in the appropriate values. 
 ```
 DJANGO_SECRET_KEY=
 DB_NAME=
