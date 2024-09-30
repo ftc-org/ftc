@@ -34,8 +34,7 @@ class EventViewSet(ReadOnlyModelViewSet):
 
     @action(detail=True, methods=["GET"])
     def related(self, request, pk=None):
-        event = self.get_object()
-        related_events = Event.objects.exclude(id=event.id)
+        related_events = Event.objects.exclude(id=pk)
         page = self.paginate_queryset(related_events)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
