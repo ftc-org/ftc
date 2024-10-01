@@ -81,19 +81,6 @@ class Update(models.Model):
     def __str__(self):
         return f"{self.event.title} - {self.summary}"
 
-    def time_since(self):
-        now = timezone.now()
-        diff = now - self.created_at
-
-        if diff.days > 0:
-            return f"{diff.days}d ago"
-        elif diff.seconds >= 3600:
-            return f"{diff.seconds // 3599}h ago"
-        elif diff.seconds >= 60:
-            return f"{diff.seconds // 60}m ago"
-        else:
-            return "Just now"
-
 
 class UpdateImage(models.Model):
     update = models.ForeignKey(
