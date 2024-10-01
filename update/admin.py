@@ -76,6 +76,6 @@ class PostAdmin(admin.ModelAdmin):
     readonly_fields = ("created_at", "updated_at")
 
 
-admin.site.site_header = "FTC Content Management Admin"
-admin.site.site_title = "FTC Content Management Portal"
-admin.site.index_title = "Welcome to FTC Content Management Portal"
+admin.site.site_header = "FTC Admin"
+admin.site.site_title = "FTC Admin Portal"
+admin.site.index_title = "Welcome to FTC Admin"
