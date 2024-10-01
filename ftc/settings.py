@@ -17,49 +17,50 @@ import environ
 from google.cloud import secretmanager
 from google.oauth2 import service_account
 
+
 def str_to_bool(value):
-    return value.lower() in ('true', 'yes', 'on', '1')
+    return value.lower() in ("true", "yes", "on", "1")
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(DEBUG=(bool, False))
-env_file = os.path.join(BASE_DIR, '.env')
+env_file = os.path.join(BASE_DIR, ".env")
 
 if os.path.isfile(env_file):
     # read a local .env file
     env.read_env(env_file)
     # load_dotenv()
-elif os.environ.get('GOOGLE_CLOUD_PROJECT', None):
+elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
     # pull .env file from Secret Manager
-    project_id = os.environ.get('GOOGLE_CLOUD_PROJECT')
+    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
     client = secretmanager.SecretManagerServiceClient()
-    settings_name = os.environ.get('SETTINGS_NAME', 'django_settings')
-    name = f'projects/{project_id}/secrets/{settings_name}/versions/latest'
-    payload = client.access_secret_version(
-        name=name).payload.data.decode('UTF-8')
+    settings_name = os.environ.get("SETTINGS_NAME", "django_settings")
+    name = f"projects/{project_id}/secrets/{settings_name}/versions/latest"
+    payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
 
     env.read_env(io.StringIO(payload))
 else:
-    raise Exception(
-        'No local .env or GOOGLE_CLOUD_PROJECT detected. No secrets found.')
+    raise Exception("No local .env or GOOGLE_CLOUD_PROJECT detected. No secrets found.")
 
 # SECRET_KEY = "django-insecure-0%=ni=ch)5x04=-3j^e%=*k*z6hrzkbuhw9v43z4s7*oksl!5%"
 # SECURITY WARNING: don't run with debug turned on in production!
 SECRET_KEY = env("SECRET_KEY")
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(',')
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(",")
 
 
-CORS_ALLOW_ALL_ORIGINS = str_to_bool(os.environ.get('CORS_ALLOW_ALL_ORIGINS', 'False'))
-CORS_ORIGINS_WHITELIST = os.environ.get("CORS_ORIGINS_WHITELIST").split(',')
+CORS_ALLOW_ALL_ORIGINS = str_to_bool(os.environ.get("CORS_ALLOW_ALL_ORIGINS", "False"))
+CORS_ORIGINS_WHITELIST = os.environ.get("CORS_ORIGINS_WHITELIST").split(",")
 
-CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS").split(',')
-CSRF_ALLOWED_ORIGINS = os.environ.get("CSRF_ALLOWED_ORIGINS").split(',')
-CSRF_COOKIE_SECURE = str_to_bool(os.environ.get('CSRF_COOKIE_SECURE', 'False'))  # Set to False if you're not using HTTPS
-CSRF_COOKIE_HTTPONLY = str_to_bool(os.environ.get('CSRF_COOKIE_HTTPONLY', 'False'))
+CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS").split(",")
+CSRF_ALLOWED_ORIGINS = os.environ.get("CSRF_ALLOWED_ORIGINS").split(",")
+CSRF_COOKIE_SECURE = str_to_bool(
+    os.environ.get("CSRF_COOKIE_SECURE", "False")
+)  # Set to False if you're not using HTTPS
+CSRF_COOKIE_HTTPONLY = str_to_bool(os.environ.get("CSRF_COOKIE_HTTPONLY", "False"))
 
 # Application definition
 
@@ -75,6 +76,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     "corsheaders",
+    "storages",
 ]
 
 REST_FRAMEWORK = {
@@ -152,19 +154,24 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
 # GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-#     os.path.join(BASE_DIR, 'gcpCredentials.json')
+#     os.path.join(BASE_DIR, "gcpCredentials.json")
 # )
 
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-GS_BUCKET_NAME = env('GS_BUCKET_NAME')
+GS_BUCKET_NAME = env("GS_BUCKET_NAME")
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+        "OPTIONS": {"bucket_name": GS_BUCKET_NAME},
+    },
+    "staticfiles": {
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+        "OPTIONS": {"bucket_name": GS_BUCKET_NAME},
+    },
+}
 
-
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
 # Media
@@ -175,5 +182,3 @@ MEDIA_ROOT = BASE_DIR / "uploads"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-
