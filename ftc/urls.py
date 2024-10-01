@@ -5,7 +5,7 @@ from django.conf import settings
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("events/", include("update.urls")),
+    # path("events/", include("update.urls")),
     path("api/", include("api.urls")),
 ]
 
