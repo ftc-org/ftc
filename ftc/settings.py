@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     "corsheaders",
+    'storages',
 ]
 
 REST_FRAMEWORK = {
@@ -158,9 +159,17 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 #     os.path.join(BASE_DIR, 'gcpCredentials.json')
 # )
 
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 GS_BUCKET_NAME = env('GS_BUCKET_NAME')
+# DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+        "OPTIONS": {
+            "bucket_name": GS_BUCKET_NAME
+        }
+    },
+}
+STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 
 STATIC_URL = '/static/'
