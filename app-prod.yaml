@@ -1,14 +1,14 @@
 runtime: python312
+service: staging
 env: standard
-service: production
 entrypoint: gunicorn -b :$PORT ftc.wsgi
 
 
 handlers:
-- url: /static              
+- url: /static             
   static_dir: staticfiles/
-- url: /media
-  static_dir: uploads/
+- url: /media             
+  static_dir: uploads/   
 - url: /.*
   script: auto
 
