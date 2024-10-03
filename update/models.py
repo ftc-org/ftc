@@ -5,6 +5,7 @@ from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image
 import io
+from prose.fields import RichTextField
 
 
 class OptimizedImageField(models.ImageField):
@@ -46,7 +47,7 @@ class OptimizedImageField(models.ImageField):
 
 class Event(models.Model):
     title = models.CharField(max_length=200)
-    description = models.TextField(default="", blank=True)
+    description = RichTextField(default="", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -70,7 +71,7 @@ class EventImage(models.Model):
 class Update(models.Model):
     event = models.ForeignKey(Event, related_name="updates", on_delete=models.CASCADE)
     summary = models.CharField(max_length=200, default="")
-    content = models.TextField(default="", blank=True)
+    content = RichTextField(default="", blank=True)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -93,7 +94,7 @@ class UpdateImage(models.Model):
 
 class Post(models.Model):
     title = models.CharField(max_length=200)
-    content = models.TextField()
+    content = RichTextField(blank=True, default="")
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     is_published = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
