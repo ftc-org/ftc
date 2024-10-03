@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     "django_filters",
     "corsheaders",
     "storages",
+    "prose",
 ]
 
 REST_FRAMEWORK = {
